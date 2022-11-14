@@ -6,8 +6,8 @@
   community.docker.docker_container:
     name: jenkins-docker
     image: jenkins/jenkins
-    auto_remove: true
     detach: true
+    restart_policy: on-failure
     privileged: true
     networks:
       - name: jenkins
