@@ -1,0 +1,46 @@
+- name: Docker install
+  block:
+    - name: Add apt-key
+      ansible.builtin.apt_key:
+        state: present
+        url: https://download.docker.com/linux/ubuntu/gpg
+        keyring: /etc/apt/keyrings/docker.gpg
+      tags: key
+    - name: Install Docker apt repository
+      ansible.builtin.apt_repository:
+        state: present
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        update-cache: true
+        filename: docker
+      tags: repo
+    - name: Install docker-ce lib
+      ansible.builtin.apt:
+        state: present
+        update_cache: true
+        name: docker-ce
+    - name: Check Docker installed
+      service:
+        name: docker
+        state: restarted
+        enabled: true
+  become: true
+
+- name: Install Docker-Compose lib
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+    name:
+      - docker-compose-plugin
+  become: true
+
+- name: Complete Docker Install
+  block:
+    - name: Add user to Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: true
+    - name: Reboot
+      reboot:
+  become: true

@@ -1,0 +1,34 @@
+- name: Configure Jenkins Docker network
+  community.docker.docker_network:
+    state: present
+    name: jenkins
+- name: Run Jenkins container
+  community.docker.docker_container:
+    name: jenkins-docker
+    image: jenkins/jenkins
+    auto_remove: true
+    detach: true
+    privileged: true
+    networks:
+      - name: jenkins
+        aliases:
+          - docker
+    volumes:
+      - jenkins-docker-certs:/certs/client
+      - jenkins-data:/var/jenkins_home
+    ports:
+      - 8080:8080
+      - 50000:50000
+    env:
+      DOCKER_TLS_CERTDIR: "/certs"
+      DOCKER_TLS_VERIFY: "1"
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_HOST: tcp://docker:2376
+- name: Get jenkins admin password
+  community.docker.docker_container_exec:
+    container: jenkins-docker
+    command: /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword"
+  register: jenkins_admin_password
+- name: Print jenkins admin password
+  debug:
+    var: jenkins_admin_password.stdout
