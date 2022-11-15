@@ -1,0 +1,12 @@
+- name: Configure buildagent user
+  block:
+    - name: Create buildagent user
+      ansible.builtin.user:
+        state: present
+        name: buildagent
+    - name: Set authorized key for buildagent
+      ansible.posix.authorized_key:
+        user: buildagent
+        state: present
+        key: "{{ lookup('file', lookup('file', '.ssh_jenkins_agent_public_key_path')) }}"
+  become: true

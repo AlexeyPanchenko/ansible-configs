@@ -1,0 +1,2 @@
+host_info:
+  private_key_path: "{{ lookup('file', '.ssh_root_private_key_path') }}"

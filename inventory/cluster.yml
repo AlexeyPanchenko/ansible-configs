@@ -6,4 +6,11 @@ all:
           ansible_host: 51.250.95.64
           ansible_port: 22
           ansible_user: punchman
-          ansible_ssh_private_key_file: .ssh_key
+          ansible_ssh_private_key_file: "{{ host_info.private_key_path }}"
+    jenkins_agents:
+      hosts:
+        jenkins_agent1:
+          ansible_host: 84.252.131.54
+          ansible_port: 22
+          ansible_user: punchman
+          ansible_ssh_private_key_file: "{{ host_info.private_key_path }}"

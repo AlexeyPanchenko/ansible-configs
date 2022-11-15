@@ -1,0 +1,7 @@
+- name: Configure Jenkins Agents
+  hosts: jenkins_agents
+  roles:
+    - role: java11
+      tags: libs-install
+    - role: configure-buildagent-user
+      tags: configure-buildagent-user
